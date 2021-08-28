@@ -59,6 +59,18 @@ services:
       - MYSQL_DATABASE=db
     volumes:
       - dbusers:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "7300:80"
+    links:
+      - users-service-db
+      - chat-service-db
+    depends_on: 
+      - users-service-db
+      - chat-service-db
+    volumes: 
+      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
 
 volumes:
   front_modules: {}
