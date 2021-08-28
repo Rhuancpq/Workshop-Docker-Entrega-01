@@ -13,9 +13,25 @@ services:
       context: ./users-service
     ports:
       - "7101:7101"
-    restart: on-failure
-    depends_on:
+    restart: on-failure # caso o db dê erro, vai reiniciar :)
+    depends_on: # não garente que o db esteja pronto antes de iniciar o serviço
       - users-service-db
+    volumes:
+      - ./users-service:/app
+      - users-service-modules:/app/node_modules
+  chat-service:
+    build:
+      context: ./chat-service
+    ports:
+      - "7100:7100"
+    volumes:
+      - ./chat-service:/app
+    restart: on-failure # caso o db dê erro, vai reiniciar :)
+    depends_on: # não garente que o db esteja pronto antes de iniciar o serviço
+      - chat-service-db
+    volumes: 
+      - ./chat-service:/app
+      - chat-service-modules:/app/node_modules
   users-service-db:
     image: mysql:5.7.20
     ports:
@@ -25,7 +41,18 @@ services:
       - MYSQL_DATABASE=db
     volumes:
       - dbusers:/var/lib/mysql
+  chat-service-db:
+    image: mysql:5.7.20
+    ports:
+      - "7200:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=db
+    volumes:
+      - dbusers:/var/lib/mysql
 
 volumes:
   front_modules: {}
   dbusers: {}
+  users-service-modules: {}
+  chat-service-modules: {}
