@@ -8,6 +8,15 @@ services:
     volumes:
       - ./chat-app:/app
       - front_modules:/app/node_modules
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "7000:7000"
+    restart: on-failure
+    volumes:
+      - ./api-gateway:/app
+      - gateway-modules:/app/node_modules
   users-service:
     build:
       context: ./users-service
@@ -56,3 +65,4 @@ volumes:
   dbusers: {}
   users-service-modules: {}
   chat-service-modules: {}
+  gateway-modules: {}
